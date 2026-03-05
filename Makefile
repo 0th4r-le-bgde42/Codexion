@@ -6,7 +6,7 @@
 #    By: ldauber <ldauber@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/04 10:17:50 by ldauber           #+#    #+#              #
-#    Updated: 2026/03/04 15:05:43 by ldauber          ###   ########.fr        #
+#    Updated: 2026/03/05 07:52:03 by ldauber          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ CFLAGS = -Wall -Werror -Wextra -pthread
 
 RM = rm -rf
 
-SRC = codexion.c heap.c routine.c init.c utils.c
+SRC = codexion.c heap.c routine.c dongles.c init.c utils.c
 
 OBJ = $(SRC:.c=.o)
 

@@ -6,7 +6,7 @@
 /*   By: ldauber <ldauber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 09:42:45 by ldauber           #+#    #+#             */
-/*   Updated: 2026/03/04 15:13:48 by ldauber          ###   ########.fr       */
+/*   Updated: 2026/03/05 08:21:26 by ldauber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,43 +36,51 @@ int parsing(char **av, t_config *config)
 	return (0);
 }
 
+#include "codexion.h"
+
 int main(int ac, char **av)
 {
-	t_data data;
-	int i;
+	t_data    data;
+	pthread_t monitor_id;
+	int       i;
 
-	if (ac != 9 || parsing(av, &data.config) != 0)
+	if (ac != 9)
+	{
+		printf("Error: Wrong number of arguments\n");
+		return (1);
+	}
+	if (parsing(av, &data.config) != 0)
 		return (1);
 
+	// 1. Initialisation globale
 	data.config.simulation_stop = 0;
-	// 1. Initialisation des ressources
 	pthread_mutex_init(&data.config.write_mutex, NULL);
 	pthread_mutex_init(&data.config.stop_mutex, NULL);
-	init_dongles(&data);
-	init_coders(&data);
 	
-	data.config.start_time = get_time_ms();
-	printf("--- Démarrage de la simulation (5s de test) ---\n");
+	if (init_dongles(&data) != 0 || init_coders(&data) != 0)
+		return (1); // Idéalement, appelle une fonction free_all ici
 
-	// 2. Lancement des threads codeurs
+	// 2. Point de départ temporel
+	data.config.start_time = get_time_ms();
+
+	// 3. Lancement des threads Codeurs
 	i = 0;
 	while (i < data.config.num_coders)
 	{
-		data.coder[i].last_compile_start = data.config.start_time;
+		// On synchronise le temps de survie initial sur le début de la simulation
+		data.coder[i].last_compile_start = get_time_ms();
 		pthread_create(&data.coder[i].thread_id, NULL, &coder_routine, &data.coder[i]);
 		i++;
 	}
 
-	// 3. On laisse tourner 5 secondes
-	usleep(1000 * 1000);
+	// 4. Lancement du thread Moniteur
+	if (pthread_create(&monitor_id, NULL, &monitor_routine, &data) != 0)
+		return (1);
 
-	// 4. On force l'arrêt
-	pthread_mutex_lock(&data.config.stop_mutex);
-	data.config.simulation_stop = 1;
-	pthread_mutex_unlock(&data.config.stop_mutex);
-	printf("--- Fin de simulation ---\n");
+	// 5. Attente de la fin (Le moniteur finit quand quelqu'un meurt ou a fini)
+	pthread_join(monitor_id, NULL);
 
-	// 5. Attente des threads
+	// 6. Nettoyage des threads Codeurs
 	i = 0;
 	while (i < data.config.num_coders)
 	{
@@ -80,6 +88,24 @@ int main(int ac, char **av)
 		i++;
 	}
 
+	// 7. Libération des ressources (Appelle ton futur free_all)
+	// free_all(&data);
+	
+	// t_config config;
+	// char *scheduler;
+	// if (config.scheduler_type == 1)
+	// 	scheduler = "edf";
+	// else
+	// 	scheduler = "fifo";
+	// printf("Coders: %d\n", config.num_coders);
+	// printf("Time to burnout: %d\n", config.time_to_burnout);
+	// printf("Time to compile: %d\n", config.time_to_compile);
+	// printf("Time to debug: %d\n", config.time_to_debug);
+	// printf("Time to refactor : %d\n", config.time_to_refactor);
+	// printf("Compilation required: %d\n", config.required_compiles);
+	// printf("Dongles cooldown: %d\n", config.dongle_cooldown);
+	// printf("Scheduler: %s\n", scheduler);
+	
 	return (0);
 }
 /* int main(int ac, char **av)

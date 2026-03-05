@@ -6,7 +6,7 @@
 /*   By: ldauber <ldauber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 14:47:25 by ldauber           #+#    #+#             */
-/*   Updated: 2026/03/04 15:16:38 by ldauber          ###   ########.fr       */
+/*   Updated: 2026/03/05 07:50:08 by ldauber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,4 +31,21 @@ void print_log(t_coder *coder, char *message)
 
 	pthread_mutex_unlock(&coder->config->stop_mutex);
 	pthread_mutex_unlock(&coder->config->write_mutex);
+}
+
+void smart_sleep(long time, t_config *config)
+{
+	long start = get_time_ms();
+	
+	while (get_time_ms() - start < time)
+	{
+		pthread_mutex_lock(&config->stop_mutex);
+		if (config->simulation_stop)
+		{
+			pthread_mutex_unlock(&config->stop_mutex);
+			break;
+		}
+		pthread_mutex_unlock(&config->stop_mutex);
+		usleep(500);
+	}
 }

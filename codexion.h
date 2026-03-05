@@ -6,7 +6,7 @@
 /*   By: ldauber <ldauber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 08:17:57 by ldauber           #+#    #+#             */
-/*   Updated: 2026/03/04 15:17:04 by ldauber          ###   ########.fr       */
+/*   Updated: 2026/03/05 08:37:04 by ldauber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,8 @@ struct s_dongle
 {
 	pthread_mutex_t	mutex;
 	pthread_cond_t	cond;
-	int				last_release_time;
+	int				is_taken;
+	long			last_release_time;
 	t_heap			request_queue;
 };
 
@@ -62,7 +63,7 @@ struct s_coder
 {
 	pthread_t	thread_id;
 	int			id;
-	int			last_compile_start;
+	long		last_compile_start;
 	int			compiles_done;
 
 	t_config	*config;
@@ -77,18 +78,30 @@ typedef struct s_data
 	t_dongle	*dongles;
 } t_data;
 
-long get_time_ms(void);
-void print_log(t_coder *coder, char *message);
-void smart_sleep(long time, t_config *config);
-void take_dongle(t_dongle *dongle, t_coder *coder);
-void drop_dongle(t_dongle *dongle);
-void *coder_routine(void *arg);
-int init_dongles(t_data *data);
-int init_coders(t_data *data);
-void init_arg(char **av, t_config *config);
+// HEAP
 int compare_coders(t_coder *a, t_coder *b, t_config *config);
 void heap_push(t_heap *heap, t_coder *coder, t_config *config);
 void heap_pop(t_heap *heap, t_config *config);
 t_coder *heap_peek(t_heap *heap);
+
+// ROUTINE
+void *coder_routine(void *arg);
+void *monitor_routine(void *arg);
+
+// DONGLES
+void take_dongle(t_dongle *dongle, t_coder *coder);
+void drop_dongle(t_dongle *dongle);
+void manage_dongle_in(t_coder *coder);
+void manage_dongle_out(t_coder *coder);
+
+// INIT
+void init_arg(char **av, t_config *config);
+int init_dongles(t_data *data);
+int init_coders(t_data *data);
+
+// UTILS
+long get_time_ms(void);
+void print_log(t_coder *coder, char *message);
+void smart_sleep(long time, t_config *config);
 
 #endif
