@@ -6,7 +6,7 @@
 /*   By: ldauber <ldauber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 14:47:25 by ldauber           #+#    #+#             */
-/*   Updated: 2026/03/05 11:21:27 by ldauber          ###   ########.fr       */
+/*   Updated: 2026/03/05 11:41:35 by ldauber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void	free_all(t_data *data)
 			i++;
 		}
 		free(data->dongles);
-		data->dongles =  NULL;
+		data->dongles = NULL;
 	}
 	if (data->coder)
 	{
