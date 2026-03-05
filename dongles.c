@@ -6,7 +6,7 @@
 /*   By: ldauber <ldauber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 07:49:26 by ldauber           #+#    #+#             */
-/*   Updated: 2026/03/05 11:27:30 by ldauber          ###   ########.fr       */
+/*   Updated: 2026/03/05 13:47:25 by ldauber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 void	take_dongle(t_dongle *dongle, t_coder *coder)
 {
+	int stop;
+
 	pthread_mutex_lock(&dongle->mutex);
 	heap_push(&dongle->request_queue, coder, coder->config);
 	while (heap_peek(&dongle->request_queue) != coder || dongle->is_taken
@@ -21,18 +23,18 @@ void	take_dongle(t_dongle *dongle, t_coder *coder)
 		+ coder->config->dongle_cooldown)
 	{
 		pthread_mutex_lock(&coder->config->stop_mutex);
-		if (coder->config->simulation_stop)
-		{
-			pthread_mutex_unlock(&coder->config->stop_mutex);
-			break ;
-		}
+		stop = coder->config->simulation_stop;
 		pthread_mutex_unlock(&coder->config->stop_mutex);
+		if (stop)
+			break ;
 		pthread_cond_wait(&dongle->cond, &dongle->mutex);
 	}
 	heap_pop(&dongle->request_queue, coder->config);
-	dongle->is_taken = 1;
-	print_log(coder, "has taken a dongle");
+	if (!coder->config->simulation_stop)
+		dongle->is_taken = 1;
 	pthread_mutex_unlock(&dongle->mutex);
+	if (!coder->config->simulation_stop)
+		print_log(coder, "has taken a dongle");
 }
 
 void	drop_dongle(t_dongle *dongle)

@@ -6,7 +6,7 @@
 /*   By: ldauber <ldauber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 13:41:16 by ldauber           #+#    #+#             */
-/*   Updated: 2026/03/05 09:34:44 by ldauber          ###   ########.fr       */
+/*   Updated: 2026/03/05 13:41:51 by ldauber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,13 @@ void	*coder_routine(void *arg)
 		pthread_mutex_unlock(&coder->config->stop_mutex);
 		manage_dongle_in(coder);
 		print_log(coder, "is compiling");
+		pthread_mutex_lock(&coder->config->write_mutex);
 		coder->last_compile_start = get_time_ms();
+		pthread_mutex_unlock(&coder->config->write_mutex);
 		smart_sleep(coder->config->time_to_compile, coder->config);
+		pthread_mutex_lock(&coder->config->write_mutex);
 		coder->compiles_done++;
+		pthread_mutex_unlock(&coder->config->write_mutex);
 		manage_dongle_out(coder);
 		print_log(coder, "is debugging");
 		smart_sleep(coder->config->time_to_debug, coder->config);
@@ -45,6 +49,9 @@ void	*monitor_routine(void *arg)
 	t_data	*data;
 	int		task_finished;
 	int		i;
+	int		done;
+	long	last;
+	
 
 	data = (t_data *)arg;
 	while (1)
@@ -53,12 +60,15 @@ void	*monitor_routine(void *arg)
 		task_finished = 1;
 		while (i < data->config.num_coders)
 		{
-			if (get_time_ms() - data->coder[i].last_compile_start
-				>= data->config.time_to_burnout)
+			pthread_mutex_lock(&data->config.write_mutex);
+			last = data->coder[i].last_compile_start;
+			done = data->coder[i].compiles_done;
+			pthread_mutex_unlock(&data->config.write_mutex);
+			if (get_time_ms() - last >= data->config.time_to_burnout)
 				return (wake_up_call(data),
 					print_log(&data->coder[i], "burned out"),
 					NULL);
-			if (data->coder[i].compiles_done < data->config.required_compiles)
+			if (done < data->config.required_compiles)
 				task_finished = 0;
 			i++;
 		}

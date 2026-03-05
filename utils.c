@@ -6,7 +6,7 @@
 /*   By: ldauber <ldauber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 14:47:25 by ldauber           #+#    #+#             */
-/*   Updated: 2026/03/05 11:41:35 by ldauber          ###   ########.fr       */
+/*   Updated: 2026/03/05 13:42:20 by ldauber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ void	print_log(t_coder *coder, char *message)
 
 	now = get_time_ms();
 	start = coder->config->start_time;
-	pthread_mutex_lock(&coder->config->write_mutex);
 	pthread_mutex_lock(&coder->config->stop_mutex);
+	pthread_mutex_lock(&coder->config->write_mutex);
 	if (!coder->config->simulation_stop || strcmp(message, "burned out") == 0)
 		printf("%ld %d %s\n", now - start, coder->id, message);
 	pthread_mutex_unlock(&coder->config->stop_mutex);
@@ -60,6 +60,7 @@ void	wake_up_call(t_data *data)
 
 	pthread_mutex_lock(&data->config.stop_mutex);
 	data->config.simulation_stop = 1;
+	pthread_mutex_unlock(&data->config.stop_mutex);
 	j = 0;
 	while (j < data->config.num_coders)
 	{
@@ -68,7 +69,6 @@ void	wake_up_call(t_data *data)
 		pthread_mutex_unlock(&data->dongles[j].mutex);
 		j++;
 	}
-	pthread_mutex_unlock(&data->config.stop_mutex);
 }
 
 void	free_all(t_data *data)
