@@ -6,7 +6,7 @@
 /*   By: ldauber <ldauber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 08:17:57 by ldauber           #+#    #+#             */
-/*   Updated: 2026/03/05 10:27:28 by ldauber          ###   ########.fr       */
+/*   Updated: 2026/03/05 14:52:42 by ldauber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,14 @@
 
 # define FIFO 0
 # define EDF 1 
+# define RESET   "\033[0m"
+# define RED     "\033[1;31m"
+# define GREEN   "\033[1;32m"
+# define YELLOW  "\033[1;33m"
+# define BLUE    "\033[1;34m"
+# define MAGENTA "\033[1;35m"
+# define CYAN    "\033[1;36m"
+# define WHITE   "\033[1;37m"
 
 typedef struct s_coder	t_coder;
 typedef struct s_dongle	t_dongle;
@@ -65,7 +73,7 @@ struct s_coder
 	int			id;
 	long		last_compile_start;
 	int			compiles_done;
-
+	long		request_time;
 	t_config	*config;
 	t_dongle	*left_dongle;
 	t_dongle	*right_dongle;

@@ -6,7 +6,7 @@
 /*   By: ldauber <ldauber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 14:47:25 by ldauber           #+#    #+#             */
-/*   Updated: 2026/03/05 13:42:20 by ldauber          ###   ########.fr       */
+/*   Updated: 2026/03/05 15:13:19 by ldauber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,25 @@ void	print_log(t_coder *coder, char *message)
 {
 	long	now;
 	long	start;
+	char 	*color;
 
 	now = get_time_ms();
 	start = coder->config->start_time;
+	color = RESET;
+	if (strcmp(message, "has taken a dongle") == 0)
+		color = BLUE;
+	else if (strcmp(message, "is compiling") == 0)
+		color = GREEN;
+	else if (strcmp(message, "is debugging") == 0)
+		color = MAGENTA;
+	else if (strcmp(message, "is refactoring") == 0)
+		color = YELLOW;
+	else if (strcmp(message, "burned out") == 0)
+		color = RED;
 	pthread_mutex_lock(&coder->config->stop_mutex);
 	pthread_mutex_lock(&coder->config->write_mutex);
 	if (!coder->config->simulation_stop || strcmp(message, "burned out") == 0)
-		printf("%ld %d %s\n", now - start, coder->id, message);
+		printf("%ld %d %s%s%s\n", now - start, coder->id, color, message, RESET);
 	pthread_mutex_unlock(&coder->config->stop_mutex);
 	pthread_mutex_unlock(&coder->config->write_mutex);
 }

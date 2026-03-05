@@ -6,7 +6,7 @@
 /*   By: ldauber <ldauber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 08:46:12 by ldauber           #+#    #+#             */
-/*   Updated: 2026/03/05 13:12:37 by ldauber          ###   ########.fr       */
+/*   Updated: 2026/03/05 14:27:59 by ldauber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,13 @@ int	compare_coders(t_coder *a, t_coder *b, t_config *config)
 	long	deadline_b;
 
 	if (config->scheduler_type == FIFO)
-		return (a->id < b->id);
+		return (a->request_time < b->request_time);
 	else
 	{
 		deadline_a = a->last_compile_start + config->time_to_burnout;
 		deadline_b = b->last_compile_start + config->time_to_burnout;
+		if (deadline_a == deadline_b)
+			return (a->request_time < b->request_time);
 		return (deadline_a < deadline_b);
 	}
 }

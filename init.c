@@ -6,7 +6,7 @@
 /*   By: ldauber <ldauber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 12:55:53 by ldauber           #+#    #+#             */
-/*   Updated: 2026/03/05 11:28:24 by ldauber          ###   ########.fr       */
+/*   Updated: 2026/03/05 14:43:39 by ldauber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ int	init_dongles(t_data *data)
 				* data->config.num_coders);
 		data->dongles[i].request_queue.size = 0;
 		data->dongles[i].request_queue.capacity = data->config.num_coders;
+		data->dongles[i].is_taken = 0;
 		i++;
 	}
 	return (0);
