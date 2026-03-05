@@ -6,26 +6,26 @@
 /*   By: ldauber <ldauber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 08:17:57 by ldauber           #+#    #+#             */
-/*   Updated: 2026/03/05 08:37:04 by ldauber          ###   ########.fr       */
+/*   Updated: 2026/03/05 10:27:28 by ldauber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CODEXION_H
 # define CODEXION_H
 
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <pthread.h>
-#include <unistd.h>
-#include <sys/time.h>
+# include <string.h>
+# include <stdlib.h>
+# include <stdio.h>
+# include <pthread.h>
+# include <unistd.h>
+# include <sys/time.h>
 
-#define FIFO 0
-#define EDF 1 
+# define FIFO 0
+# define EDF 1 
 
-typedef struct s_coder t_coder;
-typedef struct s_dongle t_dongle;
-typedef struct s_config t_config;
+typedef struct s_coder	t_coder;
+typedef struct s_dongle	t_dongle;
+typedef struct s_config	t_config;
 
 typedef struct s_config
 {
@@ -41,14 +41,14 @@ typedef struct s_config
 	long			start_time;
 	pthread_mutex_t	write_mutex;
 	pthread_mutex_t	stop_mutex;
-} t_config;
+}	t_config;
 
 typedef struct s_heap
 {
-	t_coder **array;
+	t_coder	**array;
 	int		size;
 	int		capacity;
-} t_heap;
+}	t_heap;
 
 struct s_dongle
 {
@@ -76,32 +76,34 @@ typedef struct s_data
 	t_config	config;
 	t_coder		*coder;
 	t_dongle	*dongles;
-} t_data;
+}	t_data;
 
 // HEAP
-int compare_coders(t_coder *a, t_coder *b, t_config *config);
-void heap_push(t_heap *heap, t_coder *coder, t_config *config);
-void heap_pop(t_heap *heap, t_config *config);
-t_coder *heap_peek(t_heap *heap);
+int		compare_coders(t_coder *a, t_coder *b, t_config *config);
+void	heap_push(t_heap *heap, t_coder *coder, t_config *config);
+void	heap_pop(t_heap *heap, t_config *config);
+t_coder	*heap_peek(t_heap *heap);
 
 // ROUTINE
-void *coder_routine(void *arg);
-void *monitor_routine(void *arg);
+void	*coder_routine(void *arg);
+void	*monitor_routine(void *arg);
 
 // DONGLES
-void take_dongle(t_dongle *dongle, t_coder *coder);
-void drop_dongle(t_dongle *dongle);
-void manage_dongle_in(t_coder *coder);
-void manage_dongle_out(t_coder *coder);
+void	take_dongle(t_dongle *dongle, t_coder *coder);
+void	drop_dongle(t_dongle *dongle);
+void	manage_dongle_in(t_coder *coder);
+void	manage_dongle_out(t_coder *coder);
 
 // INIT
-void init_arg(char **av, t_config *config);
-int init_dongles(t_data *data);
-int init_coders(t_data *data);
+void	init_arg(char **av, t_config *config);
+int		init_dongles(t_data *data);
+int		init_coders(t_data *data);
 
 // UTILS
-long get_time_ms(void);
-void print_log(t_coder *coder, char *message);
-void smart_sleep(long time, t_config *config);
+long	get_time_ms(void);
+void	print_log(t_coder *coder, char *message);
+void	smart_sleep(long time, t_config *config);
+void	wake_up_call(t_data *data);
+void	free_all(t_data *data);
 
 #endif

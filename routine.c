@@ -6,22 +6,24 @@
 /*   By: ldauber <ldauber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 13:41:16 by ldauber           #+#    #+#             */
-/*   Updated: 2026/03/05 09:01:41 by ldauber          ###   ########.fr       */
+/*   Updated: 2026/03/05 09:34:44 by ldauber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-void *coder_routine(void *arg)
+void	*coder_routine(void *arg)
 {
-	t_coder *coder = (t_coder *)arg;
+	t_coder	*coder;
+
+	coder = (t_coder *)arg;
 	while (1)
 	{
 		pthread_mutex_lock(&coder->config->stop_mutex);
 		if (coder->config->simulation_stop)
 		{
 			pthread_mutex_unlock(&coder->config->stop_mutex);
-			break;
+			break ;
 		}
 		pthread_mutex_unlock(&coder->config->stop_mutex);
 		manage_dongle_in(coder);
@@ -38,47 +40,30 @@ void *coder_routine(void *arg)
 	return (NULL);
 }
 
-void *monitor_routine(void *arg)
+void	*monitor_routine(void *arg)
 {
-	t_data *data = (t_data *)arg;
-	int task_finished;
-	int i;
-	int j;
+	t_data	*data;
+	int		task_finished;
+	int		i;
 
+	data = (t_data *)arg;
 	while (1)
 	{
 		i = 0;
 		task_finished = 1;
 		while (i < data->config.num_coders)
 		{
-			long now = get_time_ms();
-			if (now - data->coder[i].last_compile_start >= data->config.time_to_burnout)
-			{
-				pthread_mutex_lock(&data->config.stop_mutex);
-				data->config.simulation_stop = 1;
-				j = 0;
-				while (j < data->config.num_coders)
-				{
-					pthread_mutex_lock(&data->dongles[j].mutex);
-					pthread_cond_broadcast(&data->dongles[j].cond);
-					pthread_mutex_unlock(&data->dongles[j].mutex);
-					j++;
-				}
-				pthread_mutex_unlock(&data->config.stop_mutex);
-				print_log(&data->coder[i], "burned out");
-				return (NULL);
-			}
+			if (get_time_ms() - data->coder[i].last_compile_start
+				>= data->config.time_to_burnout)
+				return (wake_up_call(data),
+					print_log(&data->coder[i], "burned out"),
+					NULL);
 			if (data->coder[i].compiles_done < data->config.required_compiles)
 				task_finished = 0;
 			i++;
 		}
 		if (task_finished)
-		{
-			pthread_mutex_lock(&data->config.stop_mutex);
-			data->config.simulation_stop = 1;
-			pthread_mutex_unlock(&data->config.stop_mutex);
-			return (NULL);
-		}
+			return (wake_up_call(data), NULL);
 		usleep(1000);
 	}
 	return (NULL);
