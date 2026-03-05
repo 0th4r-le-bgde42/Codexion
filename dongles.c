@@ -6,7 +6,7 @@
 /*   By: ldauber <ldauber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 07:49:26 by ldauber           #+#    #+#             */
-/*   Updated: 2026/03/05 08:22:53 by ldauber          ###   ########.fr       */
+/*   Updated: 2026/03/05 08:42:46 by ldauber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,11 @@ void take_dongle(t_dongle *dongle, t_coder *coder)
 {
 	pthread_mutex_lock(&dongle->mutex);
 	heap_push(&dongle->request_queue, coder, coder->config);
-	while (heap_peek(&dongle->request_queue) != coder ||
+	while (heap_peek(&dongle->request_queue) != coder || dongle->is_taken ||
 			get_time_ms() < dongle->last_release_time + coder->config->dongle_cooldown)
 		pthread_cond_wait(&dongle->cond, &dongle->mutex);
 	heap_pop(&dongle->request_queue, coder->config);
+	dongle->is_taken = 1;
 	print_log(coder, "has taken a dongle");
 	pthread_mutex_unlock(&dongle->mutex);
 }
@@ -27,6 +28,7 @@ void take_dongle(t_dongle *dongle, t_coder *coder)
 void drop_dongle(t_dongle *dongle)
 {
 	pthread_mutex_lock(&dongle->mutex);
+	dongle->is_taken = 0;
 	dongle->last_release_time = get_time_ms();
 	pthread_cond_broadcast(&dongle->cond);
 	pthread_mutex_unlock(&dongle->mutex);

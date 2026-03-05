@@ -6,7 +6,7 @@
 /*   By: ldauber <ldauber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 09:42:45 by ldauber           #+#    #+#             */
-/*   Updated: 2026/03/05 08:21:26 by ldauber          ###   ########.fr       */
+/*   Updated: 2026/03/05 08:54:51 by ldauber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,20 +91,19 @@ int main(int ac, char **av)
 	// 7. Libération des ressources (Appelle ton futur free_all)
 	// free_all(&data);
 	
-	// t_config config;
-	// char *scheduler;
-	// if (config.scheduler_type == 1)
-	// 	scheduler = "edf";
-	// else
-	// 	scheduler = "fifo";
-	// printf("Coders: %d\n", config.num_coders);
-	// printf("Time to burnout: %d\n", config.time_to_burnout);
-	// printf("Time to compile: %d\n", config.time_to_compile);
-	// printf("Time to debug: %d\n", config.time_to_debug);
-	// printf("Time to refactor : %d\n", config.time_to_refactor);
-	// printf("Compilation required: %d\n", config.required_compiles);
-	// printf("Dongles cooldown: %d\n", config.dongle_cooldown);
-	// printf("Scheduler: %s\n", scheduler);
+	char *scheduler;
+	if (data.config.scheduler_type == 1)
+		scheduler = "edf";
+	else
+		scheduler = "fifo";
+	printf("Coders: %d\n", data.config.num_coders);
+	printf("Time to burnout: %d\n", data.config.time_to_burnout);
+	printf("Time to compile: %d\n", data.config.time_to_compile);
+	printf("Time to debug: %d\n", data.config.time_to_debug);
+	printf("Time to refactor : %d\n", data.config.time_to_refactor);
+	printf("Compilation required: %d\n", data.config.required_compiles);
+	printf("Dongles cooldown: %d\n", data.config.dongle_cooldown);
+	printf("Scheduler: %s\n", scheduler);
 	
 	return (0);
 }

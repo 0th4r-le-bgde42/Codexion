@@ -6,7 +6,7 @@
 /*   By: ldauber <ldauber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 13:41:16 by ldauber           #+#    #+#             */
-/*   Updated: 2026/03/05 08:30:17 by ldauber          ###   ########.fr       */
+/*   Updated: 2026/03/05 09:01:41 by ldauber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ void *monitor_routine(void *arg)
 	t_data *data = (t_data *)arg;
 	int task_finished;
 	int i;
+	int j;
 
 	while (1)
 	{
@@ -55,6 +56,14 @@ void *monitor_routine(void *arg)
 			{
 				pthread_mutex_lock(&data->config.stop_mutex);
 				data->config.simulation_stop = 1;
+				j = 0;
+				while (j < data->config.num_coders)
+				{
+					pthread_mutex_lock(&data->dongles[j].mutex);
+					pthread_cond_broadcast(&data->dongles[j].cond);
+					pthread_mutex_unlock(&data->dongles[j].mutex);
+					j++;
+				}
 				pthread_mutex_unlock(&data->config.stop_mutex);
 				print_log(&data->coder[i], "burned out");
 				return (NULL);
