@@ -6,7 +6,7 @@
 /*   By: ldauber <ldauber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 07:49:26 by ldauber           #+#    #+#             */
-/*   Updated: 2026/03/05 14:45:22 by ldauber          ###   ########.fr       */
+/*   Updated: 2026/03/06 07:57:14 by ldauber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ static int	check_stop(t_coder *coder)
 	pthread_mutex_unlock(&coder->config->stop_mutex);
 	return (stop);
 }
+
 void	take_dongle(t_dongle *dongle, t_coder *coder)
 {
 	pthread_mutex_lock(&dongle->mutex);

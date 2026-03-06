@@ -6,7 +6,7 @@
 /*   By: ldauber <ldauber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 08:17:57 by ldauber           #+#    #+#             */
-/*   Updated: 2026/03/05 14:52:42 by ldauber          ###   ########.fr       */
+/*   Updated: 2026/03/06 07:54:12 by ldauber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ typedef struct s_config
 	int				dongle_cooldown;
 	int				scheduler_type;
 	int				simulation_stop;
+	int				stop_reason;
 	long			start_time;
 	pthread_mutex_t	write_mutex;
 	pthread_mutex_t	stop_mutex;
@@ -111,7 +112,7 @@ int		init_coders(t_data *data);
 long	get_time_ms(void);
 void	print_log(t_coder *coder, char *message);
 void	smart_sleep(long time, t_config *config);
-void	wake_up_call(t_data *data);
+void	wake_up_call(t_data *data, int reason);
 void	free_all(t_data *data);
 
 #endif

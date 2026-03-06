@@ -6,7 +6,7 @@
 /*   By: ldauber <ldauber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 13:41:16 by ldauber           #+#    #+#             */
-/*   Updated: 2026/03/05 15:18:15 by ldauber          ###   ########.fr       */
+/*   Updated: 2026/03/06 07:53:54 by ldauber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static int	check_death(t_data *data, int i, int *task_finished)
 	pthread_mutex_unlock(&data->config.write_mutex);
 	if (get_time_ms() - last >= data->config.time_to_burnout)
 	{
-		wake_up_call(data);
+		wake_up_call(data, 1);
 		print_log(&data->coder[i], "burned out");
 		return (1);
 	}
@@ -84,7 +84,7 @@ void	*monitor_routine(void *arg)
 			pthread_mutex_unlock(&data->config.write_mutex);
 		}
 		if (task_finished)
-			return (wake_up_call(data), NULL);
+			return (wake_up_call(data, 0), NULL);
 		i = -1;
 		while (++i < data->config.num_coders)
 			if (check_death(data, i, &task_finished))
