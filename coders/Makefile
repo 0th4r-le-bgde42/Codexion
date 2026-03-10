@@ -6,7 +6,7 @@
 #    By: ldauber <ldauber@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/04 10:17:50 by ldauber           #+#    #+#              #
-#    Updated: 2026/03/06 09:58:05 by ldauber          ###   ########.fr        #
+#    Updated: 2026/03/10 23:08:30 by ldauber          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -68,12 +68,12 @@ re: fclean all
 
 run:
 	@printf "$(BLUE)Numbers of codeurs (default 4): $(DEF_COLOR)"; read NBR; \
-	printf "$(BLUE)Time to burnout(default 410): $(DEF_COLOR)"; read BURN; \
-	printf "$(BLUE)Time to compile(default 200): $(DEF_COLOR)"; read COMP; \
-	printf "$(BLUE)Time to debug(default 100): $(DEF_COLOR)"; read DEB; \
-	printf "$(BLUE)Time to refactor(default 100): $(DEF_COLOR)"; read REF; \
-	printf "$(BLUE)Required compilations(default 2): $(DEF_COLOR)"; read REQUCOMP; \
-	printf "$(BLUE)Dongles cooldown(default 0): $(DEF_COLOR)"; read COOL; \
+	printf "$(BLUE)Time to burnout (default 410): $(DEF_COLOR)"; read BURN; \
+	printf "$(BLUE)Time to compile (default 200): $(DEF_COLOR)"; read COMP; \
+	printf "$(BLUE)Time to debug (default 100): $(DEF_COLOR)"; read DEB; \
+	printf "$(BLUE)Time to refactor (default 100): $(DEF_COLOR)"; read REF; \
+	printf "$(BLUE)Required compilations (default 2): $(DEF_COLOR)"; read REQUCOMP; \
+	printf "$(BLUE)Dongles cooldown (default 0): $(DEF_COLOR)"; read COOL; \
 	printf "$(BLUE)Scheduler type (fifo/edf)(default fifo): $(DEF_COLOR)"; read SCHED; \
 	ARGS="$${NBR:-4} $${BURN:-410} $${COMP:-200} $${DEB:-100} $${REF:-100} $${REQUCOMP:-2} $${COOL:-0} $${SCHED:-fifo}"; \
 	printf "\n$(ITALIC)$(BOLD)$(REVERSE)./$(NAME) $$ARGS$(DEF_COLOR)\n"; \
