@@ -6,7 +6,7 @@
 /*   By: ldauber <ldauber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 13:41:16 by ldauber           #+#    #+#             */
-/*   Updated: 2026/03/06 07:53:54 by ldauber          ###   ########.fr       */
+/*   Updated: 2026/03/16 20:38:30 by ldauber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	*coder_routine(void *arg)
 	return (NULL);
 }
 
-static int	check_death(t_data *data, int i, int *task_finished)
+static int	check_death(t_data *data, int i)
 {
 	long	last;
 
@@ -61,7 +61,6 @@ static int	check_death(t_data *data, int i, int *task_finished)
 		print_log(&data->coder[i], "burned out");
 		return (1);
 	}
-	(void)task_finished;
 	return (0);
 }
 
@@ -87,7 +86,7 @@ void	*monitor_routine(void *arg)
 			return (wake_up_call(data, 0), NULL);
 		i = -1;
 		while (++i < data->config.num_coders)
-			if (check_death(data, i, &task_finished))
+			if (check_death(data, i))
 				return (NULL);
 		usleep(1000);
 	}

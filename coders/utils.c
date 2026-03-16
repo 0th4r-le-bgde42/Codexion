@@ -6,13 +6,13 @@
 /*   By: ldauber <ldauber@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 14:47:25 by ldauber           #+#    #+#             */
-/*   Updated: 2026/03/06 07:57:46 by ldauber          ###   ########.fr       */
+/*   Updated: 2026/03/16 16:01:31 by ldauber          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-long	get_time_ms(void)
+long	 get_time_ms(void)
 {
 	struct timeval	tv;
 
