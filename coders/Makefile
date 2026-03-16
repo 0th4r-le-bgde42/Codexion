@@ -6,7 +6,7 @@
 #    By: ldauber <ldauber@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/04 10:17:50 by ldauber           #+#    #+#              #
-#    Updated: 2026/03/10 23:08:30 by ldauber          ###   ########.fr        #
+#    Updated: 2026/03/16 20:48:47 by ldauber          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -66,7 +66,7 @@ fclean: clean
 
 re: fclean all
 
-run:
+run: $(NAME)
 	@printf "$(BLUE)Numbers of codeurs (default 4): $(DEF_COLOR)"; read NBR; \
 	printf "$(BLUE)Time to burnout (default 410): $(DEF_COLOR)"; read BURN; \
 	printf "$(BLUE)Time to compile (default 200): $(DEF_COLOR)"; read COMP; \
